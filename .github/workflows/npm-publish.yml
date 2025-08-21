@@ -1,6 +1,9 @@
 name: npm-publish
 
 on:
+  push:
+    tags:
+      - 'v*'
   release:
     types: [published]
 
@@ -16,9 +19,12 @@ jobs:
       - name: Set npm version to match tag
         working-directory: npm
         run: |
-          TAG=${GITHUB_REF#refs/tags/}
+          # Derive tag from either push (GITHUB_REF_NAME) or release event
+          TAG=${GITHUB_REF_NAME:-${GITHUB_REF#refs/tags/}}
+          if [ -z "$TAG" ]; then TAG='${{ github.event.release.tag_name }}'; fi
           VERSION=${TAG#v}
-          npm version --no-git-tag-version $VERSION
+          echo "Setting npm version to $VERSION"
+          npm version --no-git-tag-version "$VERSION"
       - name: Publish
         working-directory: npm
         env:
