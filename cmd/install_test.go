@@ -80,7 +80,8 @@ func TestInstallFromLockfileHonorsVersions(t *testing.T) {
 func TestDownloadRetrySucceeds(t *testing.T) {
     if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
     var count int
-    srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    var srv *httptest.Server
+    handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         switch r.URL.Path {
         case "/y":
             url := srv.URL + "/tar/y-1.0.0.tgz"
@@ -100,7 +101,8 @@ func TestDownloadRetrySucceeds(t *testing.T) {
         default:
             http.NotFound(w,r)
         }
-    }))
+    })
+    srv = httptest.NewServer(handler)
     defer srv.Close()
     t.Setenv("WICK_REGISTRY", srv.URL)
     t.Setenv("WICK_STORE_DIR", t.TempDir())

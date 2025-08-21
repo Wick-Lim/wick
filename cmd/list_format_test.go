@@ -1,7 +1,6 @@
 package cmd
 
 import (
-  "bytes"
   "io"
   "os"
   "strings"
@@ -23,4 +22,3 @@ func TestPrintLockfileYAML(t *testing.T) {
   s := string(b)
   if !strings.Contains(s, "roots:") || !strings.Contains(s, "packages:") { t.Fatalf("unexpected yaml: %s", s) }
 }
-

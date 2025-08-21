@@ -6,7 +6,6 @@ import (
   "net/http"
   "net/http/httptest"
   "os"
-  "path/filepath"
   "testing"
   "time"
 )
@@ -40,4 +39,3 @@ func TestCacheTTLExpiresAndRefetches(t *testing.T) {
   if err != nil { t.Fatalf("fetch: %v", err) }
   if rd.DistTags["latest"] != "1.0.1" { t.Fatalf("expected refetch to 1.0.1, got %v", rd.DistTags["latest"]) }
 }
-

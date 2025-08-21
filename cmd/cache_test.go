@@ -5,7 +5,6 @@ import (
   "encoding/json"
   "net/http"
   "net/http/httptest"
-  "os"
   "testing"
   "time"
 )
@@ -34,4 +33,3 @@ func TestRegistryDiskCache(t *testing.T) {
   // second fetch should read from cache (no registry)
   if _, err := fetchRootDoc(ctx, "pkg", nil); err != nil { t.Fatalf("second fetch from cache: %v", err) }
 }
-

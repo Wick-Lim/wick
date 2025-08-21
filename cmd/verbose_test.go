@@ -7,7 +7,6 @@ import (
   "net/http"
   "net/http/httptest"
   "os"
-  "path/filepath"
   "runtime"
   "strings"
   "testing"
@@ -16,7 +15,8 @@ import (
 
 func TestVerboseLogsDuringInstall(t *testing.T) {
   if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
-  srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+  var srv *httptest.Server
+  handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
     switch r.URL.Path {
     case "/a":
       url := srv.URL + "/tar/a-1.0.0.tgz"
@@ -31,7 +31,8 @@ func TestVerboseLogsDuringInstall(t *testing.T) {
     default:
       w.WriteHeader(404)
     }
-  }))
+  })
+  srv = httptest.NewServer(handler)
   defer srv.Close()
   t.Setenv("WICK_REGISTRY", srv.URL)
   t.Setenv("WICK_STORE_DIR", t.TempDir())
@@ -58,4 +59,3 @@ func TestVerboseLogsDuringInstall(t *testing.T) {
     t.Fatalf("expected verbose logs, got: %s", out)
   }
 }
-
