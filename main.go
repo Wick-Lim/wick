@@ -4,7 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "wick/cmd"
+import "github.com/wicklim/wick/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,0 +1,37 @@
+project_name: wick
+
+builds:
+  - id: wick
+    main: ./main.go
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+      - -X wick/internal/version.Version={{.Tag}}
+
+archives:
+  - builds: [wick]
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+brews:
+  - name: wick
+    tap:
+      owner: wicklim
+      name: homebrew-tap
+    folder: Formula
+    description: Fast npm-like package installer
+    homepage: https://github.com/wicklim/wick
+    license: MIT
+    install: |
+      bin.install "wick"
+    test: |
+      system "#{bin}/wick", "--help"
+
+release:
+  prerelease: false
+

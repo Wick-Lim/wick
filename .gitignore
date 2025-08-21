@@ -1,0 +1,13 @@
+# Build artifacts
+wick
+dist/
+
+# Go caches (local)
+.gocache/
+.gomodcache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
