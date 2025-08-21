@@ -44,17 +44,16 @@ func TestUpdatePolicyMinorPatch(t *testing.T) {
   cache := make(map[string]*RootDoc)
 
   // patch policy -> 1.1.1
-  if err := updateLockfile(ctx, proj, []string{"x"}, cache, "patch"); err != nil { t.Fatalf("update patch: %v", err) }
+  if err := updateLockfile(ctx, proj, []string{"x"}, cache, "patch", nil); err != nil { t.Fatalf("update patch: %v", err) }
   data, _ := os.ReadFile(filepath.Join(proj, "wick.lock"))
   var lfPatch LockFile
   _ = json.Unmarshal(data, &lfPatch)
   if lfPatch.Roots[0] != "x@1.1.1" { t.Fatalf("expected x@1.1.1, got %v", lfPatch.Roots[0]) }
 
   // minor policy -> 1.2.0
-  if err := updateLockfile(ctx, proj, []string{"x"}, cache, "minor"); err != nil { t.Fatalf("update minor: %v", err) }
+  if err := updateLockfile(ctx, proj, []string{"x"}, cache, "minor", nil); err != nil { t.Fatalf("update minor: %v", err) }
   data, _ = os.ReadFile(filepath.Join(proj, "wick.lock"))
   var lfMinor LockFile
   _ = json.Unmarshal(data, &lfMinor)
   if lfMinor.Roots[0] != "x@1.2.0" { t.Fatalf("expected x@1.2.0, got %v", lfMinor.Roots[0]) }
 }
-

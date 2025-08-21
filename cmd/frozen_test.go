@@ -15,7 +15,8 @@ import (
 // When frozen-lockfile is used and lockfile references a version missing in registry, installation must fail.
 func TestFrozenLockfileMismatchFails(t *testing.T) {
   if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
-  srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+  var srv *httptest.Server
+  handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
     switch r.URL.Path {
     case "/x":
       // Only 1.1.0 exists; lockfile will pin 1.0.0
@@ -31,7 +32,8 @@ func TestFrozenLockfileMismatchFails(t *testing.T) {
     default:
       http.NotFound(w,r)
     }
-  }))
+  })
+  srv = httptest.NewServer(handler)
   defer srv.Close()
   t.Setenv("WICK_REGISTRY", srv.URL)
   t.Setenv("WICK_STORE_DIR", t.TempDir())
@@ -51,4 +53,3 @@ func TestFrozenLockfileMismatchFails(t *testing.T) {
     t.Fatalf("expected error due to missing version in registry")
   }
 }
-

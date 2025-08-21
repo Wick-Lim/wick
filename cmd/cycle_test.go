@@ -14,7 +14,8 @@ import (
 
 func TestCyclicDependenciesInstall(t *testing.T) {
   if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
-  srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+  var srv *httptest.Server
+  handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
     switch r.URL.Path {
     case "/a":
       ta := srv.URL + "/tar/a-1.0.0.tgz"
@@ -39,7 +40,8 @@ func TestCyclicDependenciesInstall(t *testing.T) {
     default:
       http.NotFound(w,r)
     }
-  }))
+  })
+  srv = httptest.NewServer(handler)
   defer srv.Close()
   t.Setenv("WICK_REGISTRY", srv.URL)
   t.Setenv("WICK_STORE_DIR", t.TempDir())
@@ -59,4 +61,3 @@ func TestCyclicDependenciesInstall(t *testing.T) {
     }
   }
 }
-

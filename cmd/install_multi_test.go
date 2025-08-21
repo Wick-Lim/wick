@@ -102,7 +102,8 @@ func TestInstallMultipleRoots(t *testing.T) {
 
   // Integrity mismatch should error
   called := 0
-  bad := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+  var bad *httptest.Server
+  handler2 := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
     switch r.URL.Path {
     case "/z":
       tarURL := bad.URL + "/tar/z-1.0.0.tgz"
@@ -118,7 +119,8 @@ func TestInstallMultipleRoots(t *testing.T) {
     default:
       http.NotFound(w,r)
     }
-  }))
+  })
+  bad = httptest.NewServer(handler2)
   defer bad.Close()
   t.Setenv("WICK_REGISTRY", bad.URL)
   cache = make(map[string]*RootDoc)

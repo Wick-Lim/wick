@@ -1,7 +1,6 @@
 package cmd
 
 import (
-  "bytes"
   "encoding/json"
   "io"
   "os"
@@ -11,7 +10,6 @@ import (
 func TestPrintLockfileJSON(t *testing.T) {
   roots := []string{"a@1.0.0"}
   pkgs := map[string]LockPackage{"a@1.0.0": {Name:"a", Version:"1.0.0"}}
-  var buf bytes.Buffer
   // temporarily swap stdout
   old := os.Stdout
   r, w, _ := os.Pipe()

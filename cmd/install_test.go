@@ -1,9 +1,6 @@
 package cmd
 
 import (
-    "archive/tar"
-    "bytes"
-    "compress/gzip"
     "context"
     "encoding/json"
     "net/http"
@@ -15,20 +12,6 @@ import (
     "testing"
     "time"
 )
-
-func makeTarGz(files map[string][]byte) []byte {
-    var buf bytes.Buffer
-    gz := gzip.NewWriter(&buf)
-    tw := tar.NewWriter(gz)
-    for name, data := range files {
-        hdr := &tar.Header{Name: name, Mode: 0o644, Size: int64(len(data))}
-        _ = tw.WriteHeader(hdr)
-        _, _ = tw.Write(data)
-    }
-    _ = tw.Close()
-    _ = gz.Close()
-    return buf.Bytes()
-}
 
 // lockfile-driven install should honor exact versions
 func TestInstallFromLockfileHonorsVersions(t *testing.T) {
@@ -251,5 +234,5 @@ func TestInstallParallelBasic(t *testing.T) {
     if err != nil { t.Fatalf("lockfile missing: %v", err) }
     var lf LockFile
     if err := json.Unmarshal(data, &lf); err != nil { t.Fatalf("lockfile parse: %v", err) }
-    if lf.Root == "" || len(lf.Packages) < 2 { t.Fatalf("lockfile content invalid: %+v", lf) }
+    if len(lf.Roots) == 0 || len(lf.Packages) < 2 { t.Fatalf("lockfile content invalid: %+v", lf) }
 }
