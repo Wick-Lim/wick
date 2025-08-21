@@ -1,5 +1,5 @@
 {
-  "name": "@wicklim/wick",
+  "name": "wick",
   "version": "0.1.0",
   "description": "Fast npm-like package installer (Go binary)",
   "bin": {
