@@ -1,5 +1,6 @@
 # Build artifacts
 wick
+wick.lock
 dist/
 
 # Go caches (local)
@@ -10,4 +11,3 @@ dist/
 .idea/
 .vscode/
 *.swp
-

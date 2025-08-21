@@ -45,6 +45,47 @@ type RootDoc struct {
 
 var httpClient = &http.Client{Timeout: 20 * time.Second}
 
+// Visual logging helpers
+var logFormat = "fancy" // fancy|plain
+var logNoColor = false
+var showProgress = true
+
+func colorize(code, s string) string {
+    if logNoColor { return s }
+    return code + s + "\x1b[0m"
+}
+
+func vLogFancy(icon, msg, color string) {
+    if logFormat != "fancy" { return }
+    if color != "" { msg = colorize(color, msg) }
+    fmt.Println(icon, msg)
+}
+
+func vLogPlain(prefix, msg string) {
+    if logFormat != "plain" { return }
+    if prefix != "" { fmt.Printf("[%s] %s\n", prefix, msg) } else { fmt.Println(msg) }
+}
+
+func vStage(stage, pkg, ver string) {
+    switch stage {
+    case "fetch":
+        vLogFancy("⟲", fmt.Sprintf("Fetching %s@%s", pkg, ver), "\x1b[36m")
+        vLogPlain("fetch", fmt.Sprintf("%s@%s", pkg, ver))
+    case "extract":
+        vLogFancy("⇣", fmt.Sprintf("Extracting %s@%s", pkg, ver), "\x1b[34m")
+        vLogPlain("extract", fmt.Sprintf("%s@%s", pkg, ver))
+    case "link-deps":
+        vLogFancy("↳", fmt.Sprintf("Link deps for %s@%s", pkg, ver), "\x1b[33m")
+        vLogPlain("link-deps", fmt.Sprintf("%s@%s", pkg, ver))
+    case "link-root":
+        vLogFancy("↗", fmt.Sprintf("Link %s@%s into project", pkg, ver), "\x1b[35m")
+        vLogPlain("link-root", fmt.Sprintf("%s@%s", pkg, ver))
+    case "done":
+        vLogFancy("✓", fmt.Sprintf("Installed %s@%s", pkg, ver), "\x1b[32m")
+        vLogPlain("done", fmt.Sprintf("%s@%s", pkg, ver))
+    }
+}
+
 func getJSON(ctx context.Context, url string, target any) error {
     req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
     if err != nil {
@@ -849,18 +890,21 @@ func installParallel(ctx context.Context, projectDir, storeDir string, root *Gra
                 n := t.node
                 pkgStorePath := storePkgPath(storeDir, n.Name, n.Version)
                 if _, err := os.Stat(pkgStorePath); os.IsNotExist(err) {
+                    vStage("fetch", n.Name, n.Version)
                     logf("Downloading %s@%s\n", n.Name, n.Version)
                     if err := ensureDir(pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     tarPath := filepath.Join(pkgStorePath, "pkg.tgz")
                     // download
                     if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { select { case errCh <- err: default: }; continue }
                     if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { select { case errCh <- err: default: }; continue }
+                    vStage("extract", n.Name, n.Version)
                     if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     // keep tarball for cache; optional: os.Remove(tarPath)
                 }
                 // link deps inside store
                 storeNM := filepath.Join(pkgStorePath, "node_modules")
                 if err := ensureDir(storeNM); err != nil { select { case errCh <- err: default: }; continue }
+                vStage("link-deps", n.Name, n.Version)
                 for depName, depV := range n.Deps {
                     depStore := storePkgPath(storeDir, depName, depV)
                     if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { select { case errCh <- err: default: }; break }
@@ -893,12 +937,14 @@ func installParallel(ctx context.Context, projectDir, storeDir string, root *Gra
 
     // link root into project and bins
     projectNM := filepath.Join(projectDir, "node_modules")
+    vStage("link-root", root.Name, root.Version)
     if err := linkIntoNodeModules(projectNM, root.Name, storePkgPath(storeDir, root.Name, root.Version)); err != nil {
         return err
     }
     if pj, err := readPackageJSON(storePkgPath(storeDir, root.Name, root.Version)); err == nil {
         _ = linkBins(projectDir, storePkgPath(storeDir, root.Name, root.Version), pj)
     }
+    vStage("done", root.Name, root.Version)
     return nil
 }
 
@@ -916,15 +962,18 @@ func installGraph(ctx context.Context, projectDir, storeDir string, roots []*Gra
                 n := t.node
                 pkgStorePath := storePkgPath(storeDir, n.Name, n.Version)
                 if _, err := os.Stat(pkgStorePath); os.IsNotExist(err) {
+                    vStage("fetch", n.Name, n.Version)
                     logf("Downloading %s@%s\n", n.Name, n.Version)
                     if err := ensureDir(pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     tarPath := filepath.Join(pkgStorePath, "pkg.tgz")
                     if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { select { case errCh <- err: default: }; continue }
                     if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { select { case errCh <- err: default: }; continue }
+                    vStage("extract", n.Name, n.Version)
                     if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                 }
                 storeNM := filepath.Join(pkgStorePath, "node_modules")
                 if err := ensureDir(storeNM); err != nil { select { case errCh <- err: default: }; continue }
+                vStage("link-deps", n.Name, n.Version)
                 for depName, depV := range n.Deps {
                     depStore := storePkgPath(storeDir, depName, depV)
                     if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { select { case errCh <- err: default: }; break }
@@ -945,12 +994,14 @@ func installGraph(ctx context.Context, projectDir, storeDir string, roots []*Gra
     }
     // link roots and bins
     for _, r := range roots {
+        vStage("link-root", r.Name, r.Version)
         if err := linkIntoNodeModules(filepath.Join(projectDir, "node_modules"), r.Name, storePkgPath(storeDir, r.Name, r.Version)); err != nil {
             return err
         }
         if pj, err := readPackageJSON(storePkgPath(storeDir, r.Name, r.Version)); err == nil {
             _ = linkBins(projectDir, storePkgPath(storeDir, r.Name, r.Version), pj)
         }
+        vStage("done", r.Name, r.Version)
     }
     return nil
 }
@@ -1104,6 +1155,10 @@ var installCmd = &cobra.Command{
             conc = cfg.Concurrency
         }
         if conc <= 0 { conc = runtime.NumCPU() }
+        // visual flags
+        if f, _ := cmd.Flags().GetString("log-format"); f != "" { logFormat = f }
+        logNoColor, _ = cmd.Flags().GetBool("no-color")
+        showProgress, _ = cmd.Flags().GetBool("progress")
         if err := installGraph(ctx, projectDir, storeDir, roots, allNodes, conc); err != nil {
             fmt.Println("Error:", err)
             os.Exit(1)
@@ -1122,5 +1177,8 @@ func init() {
     installCmd.Flags().Int("concurrency", runtime.NumCPU(), "Parallel downloads/extract workers")
     installCmd.Flags().String("registry", "", "Override npm registry base URL (takes precedence over WICK_REGISTRY)")
     installCmd.Flags().Bool("frozen-lockfile", false, "Use existing wick.lock exclusively and fail on mismatches")
+    installCmd.Flags().String("log-format", "fancy", "Log format: fancy|plain")
+    installCmd.Flags().Bool("no-color", false, "Disable ANSI colors in logs")
+    installCmd.Flags().Bool("progress", true, "Show progress bar")
     rootCmd.AddCommand(installCmd)
 }
