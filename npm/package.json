@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Fast npm-like package installer (Go binary)",
   "bin": {
-    "wick": "bin/wick"
+    "wick": "bin/wick.js"
   },
   "scripts": {
     "postinstall": "node scripts/install.js"
