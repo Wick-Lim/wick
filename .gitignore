@@ -11,3 +11,7 @@ dist/
 .idea/
 .vscode/
 *.swp
+# keep npm/bin/wick in package (placeholder for npm bin)
+!npm/bin/wick
+# keep npm/bin/wick in package (placeholder for npm bin)
+!npm/bin/wick

@@ -12,10 +12,25 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wicklim/wick.git"
+    "url": "git+https://github.com/wicklim/wick.git"
   },
   "dependencies": {
     "tar": "^6.2.0"
+  },
+  "files": [
+    "bin",
+    "scripts",
+    "package.json"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
-
