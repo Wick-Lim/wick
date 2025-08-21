@@ -62,7 +62,7 @@ func TestInstallFromLockfileHonorsVersions(t *testing.T) {
     b, _ := json.Marshal(lf)
     _ = os.WriteFile(filepath.Join(projectDir, "wick.lock"), b, 0o644)
 
-    ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
     cache := make(map[string]*RootDoc)
     nodes, roots, err := nodesFromLockfile(ctx, projectDir, cache)
@@ -107,7 +107,7 @@ func TestDownloadRetrySucceeds(t *testing.T) {
     t.Setenv("WICK_REGISTRY", srv.URL)
     t.Setenv("WICK_STORE_DIR", t.TempDir())
     projectDir := t.TempDir()
-    ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
     cache := make(map[string]*RootDoc)
     nodes, root, err := resolveGraph(ctx, "y", "latest", cache)

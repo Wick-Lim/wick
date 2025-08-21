@@ -43,7 +43,7 @@ func TestVerboseLogsDuringInstall(t *testing.T) {
   r, w, _ := os.Pipe()
   os.Stdout = w
   verbose = true
-  ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+  ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
   defer cancel()
   cache := make(map[string]*RootDoc)
   nodes, root, err := resolveGraph(ctx, "a", "latest", cache)

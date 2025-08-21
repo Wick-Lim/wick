@@ -67,7 +67,7 @@ func TestInstallMultipleRoots(t *testing.T) {
   t.Setenv("WICK_STORE_DIR", t.TempDir())
   projectDir := t.TempDir()
 
-  ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+  ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
   defer cancel()
   cache := make(map[string]*RootDoc)
 

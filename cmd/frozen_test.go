@@ -45,7 +45,7 @@ func TestFrozenLockfileMismatchFails(t *testing.T) {
   b,_ := json.Marshal(lf)
   _ = os.WriteFile(filepath.Join(proj, "wick.lock"), b, 0o644)
 
-  ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+  ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
   defer cancel()
   cache := make(map[string]*RootDoc)
   _, _, err := nodesFromLockfile(ctx, proj, cache)

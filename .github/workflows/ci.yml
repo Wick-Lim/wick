@@ -26,5 +26,4 @@ jobs:
       - name: Test
         env:
           GOSUMDB: 'sum.golang.org'
-        run: go test ./...
-
+        run: go test -v ./...
