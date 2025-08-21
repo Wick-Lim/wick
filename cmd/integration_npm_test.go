@@ -10,9 +10,9 @@ import (
 )
 
 // This test hits the real npm registry. It is skipped by default.
-// Enable with: WICK_INTEGRATION=1 go test -v -run TestNPMIntegration ./cmd
+// Enable with: WLIM_INTEGRATION=1 go test -v -run TestNPMIntegration ./cmd
 func TestNPMIntegration(t *testing.T) {
-  if os.Getenv("WICK_INTEGRATION") != "1" {
+  if os.Getenv("WLIM_INTEGRATION") != "1" {
     t.Skip("set WICK_INTEGRATION=1 to run npm integration test")
   }
   if runtime.GOOS == "windows" {
@@ -20,8 +20,8 @@ func TestNPMIntegration(t *testing.T) {
   }
 
   // Use default registry (registry.npmjs.org). Isolate caches/stores.
-  t.Setenv("WICK_CACHE_DIR", t.TempDir())
-  t.Setenv("WICK_STORE_DIR", t.TempDir())
+  t.Setenv("WLIM_CACHE_DIR", t.TempDir())
+  t.Setenv("WLIM_STORE_DIR", t.TempDir())
   projectDir := t.TempDir()
 
   ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -45,4 +45,3 @@ func TestNPMIntegration(t *testing.T) {
     t.Fatalf("project link missing: %v", err)
   }
 }
-

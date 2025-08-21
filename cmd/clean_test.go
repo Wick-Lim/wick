@@ -20,7 +20,7 @@ func TestCleanRemovesUnreferenced(t *testing.T) {
     "x@1.0.0": {Name:"x", Version:"1.0.0"},
   }}
   b,_ := json.Marshal(lf)
-  _ = os.WriteFile(filepath.Join(proj, "wick.lock"), b, 0o644)
+  _ = os.WriteFile(filepath.Join(proj, "wlim.lock"), b, 0o644)
 
   // Run clean
   if err := cleanStore(proj, store, false); err != nil { t.Fatalf("cleanStore: %v", err) }
@@ -30,4 +30,3 @@ func TestCleanRemovesUnreferenced(t *testing.T) {
     t.Fatalf("unreferenced not removed")
   }
 }
-

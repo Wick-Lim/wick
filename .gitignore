@@ -1,6 +1,6 @@
 # Build artifacts
-wick
-wick.lock
+wlim
+wlim.lock
 dist/
 node_modules
 
@@ -12,7 +12,7 @@ node_modules
 .idea/
 .vscode/
 *.swp
-# keep npm/bin/wick in package (placeholder for npm bin)
-!npm/bin/wick
-# keep npm/bin/wick in package (placeholder for npm bin)
-!npm/bin/wick
+# keep npm/bin/wlim in package (placeholder for npm bin)
+!npm/bin/wlim
+# keep npm/bin/wlim in package (placeholder for npm bin)
+!npm/bin/wlim

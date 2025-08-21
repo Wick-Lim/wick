@@ -1,17 +1,17 @@
-project_name: wick
+project_name: wlim
 
 builds:
-  - id: wick
+  - id: wlim
     main: ./main.go
     env: [CGO_ENABLED=0]
     goos: [darwin, linux]
     goarch: [amd64, arm64]
     ldflags:
       - -s -w
-      - -X wick/internal/version.Version={{.Tag}}
+      - -X wlim/internal/version.Version={{.Tag}}
 
 archives:
-  - builds: [wick]
+  - builds: [wlim]
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
@@ -19,19 +19,18 @@ checksum:
   name_template: checksums.txt
 
 brews:
-  - name: wick
+  - name: wlim
     tap:
       owner: wicklim
       name: homebrew-tap
     folder: Formula
     description: Fast npm-like package installer
-    homepage: https://github.com/wicklim/wick
+    homepage: https://github.com/wicklim/wlim
     license: MIT
     install: |
-      bin.install "wick"
+      bin.install "wlim"
     test: |
-      system "#{bin}/wick", "--help"
+      system "#{bin}/wlim", "--help"
 
 release:
   prerelease: false
-

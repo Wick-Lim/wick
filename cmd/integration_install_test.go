@@ -11,8 +11,8 @@ import (
 
 func TestInstallEscapeStringRegexp(t *testing.T) {
   if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
-  t.Setenv("WICK_CACHE_DIR", t.TempDir())
-  t.Setenv("WICK_STORE_DIR", t.TempDir())
+  t.Setenv("WLIM_CACHE_DIR", t.TempDir())
+  t.Setenv("WLIM_STORE_DIR", t.TempDir())
   projectDir := t.TempDir()
 
   ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -33,8 +33,8 @@ func TestInstallEscapeStringRegexp(t *testing.T) {
 
 func TestInstallTwoPackagesIntegration(t *testing.T) {
   if runtime.GOOS == "windows" { t.Skip("symlink behavior differs on Windows") }
-  t.Setenv("WICK_CACHE_DIR", t.TempDir())
-  t.Setenv("WICK_STORE_DIR", t.TempDir())
+  t.Setenv("WLIM_CACHE_DIR", t.TempDir())
+  t.Setenv("WLIM_STORE_DIR", t.TempDir())
   projectDir := t.TempDir()
 
   ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)

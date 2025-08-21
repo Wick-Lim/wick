@@ -1,9 +1,9 @@
 {
-  "name": "wick",
+  "name": "wlim",
   "version": "0.1.0",
   "description": "Fast npm-like package installer (Go binary)",
   "bin": {
-    "wick": "bin/wick.js"
+    "wlim": "bin/wlim.js"
   },
   "scripts": {
     "postinstall": "node scripts/install.js"
@@ -12,7 +12,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wicklim/wick.git"
+    "url": "git+https://github.com/wicklim/wlim.git"
   },
   "dependencies": {
     "tar": "^6.2.0"

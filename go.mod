@@ -1,4 +1,4 @@
-module github.com/wicklim/wick
+module github.com/wicklim/wlim
 
 go 1.23.1
 

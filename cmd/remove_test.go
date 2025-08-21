@@ -44,10 +44,10 @@ func TestRemoveUpdatesLockfile(t *testing.T) {
     "b@1.0.0": {Name:"b", Version:"1.0.0"},
   }}
   b,_ := json.Marshal(lf)
-  _ = os.WriteFile(filepath.Join(proj, "wick.lock"), b, 0o644)
+  _ = os.WriteFile(filepath.Join(proj, "wlim.lock"), b, 0o644)
 
   if err := removeFromLockfile(proj, []string{"a"}); err != nil { t.Fatalf("removeFromLockfile: %v", err) }
-  data, _ := os.ReadFile(filepath.Join(proj, "wick.lock"))
+  data, _ := os.ReadFile(filepath.Join(proj, "wlim.lock"))
   var lf2 LockFile
   _ = json.Unmarshal(data, &lf2)
   if len(lf2.Roots) != 1 || lf2.Roots[0] != "b@1.0.0" { t.Fatalf("unexpected roots: %+v", lf2.Roots) }

@@ -66,7 +66,7 @@ var updateCmd = &cobra.Command{
 func init() {
   updateCmd.Flags().String("dir", ".", "Project directory where node_modules resides")
   updateCmd.Flags().Int("concurrency", runtime.NumCPU(), "Parallel downloads/extract workers")
-  updateCmd.Flags().String("registry", "", "Override npm registry base URL (takes precedence over WICK_REGISTRY)")
+  updateCmd.Flags().String("registry", "", "Override npm registry base URL (takes precedence over WLIM_REGISTRY)")
   updateCmd.Flags().String("policy", "latest", "Update policy: latest|minor|patch")
   rootCmd.AddCommand(updateCmd)
 }

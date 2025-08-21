@@ -8,7 +8,7 @@ import (
 
 var initCmd = &cobra.Command{
   Use:   "init",
-  Short: "Create a default wick.json in the project",
+  Short: "Create a default wlim.json in the project",
   Run: func(cmd *cobra.Command, args []string) {
     projectDir, _ := cmd.Flags().GetString("dir")
     if projectDir == "" { projectDir = "." }
@@ -20,7 +20,7 @@ var initCmd = &cobra.Command{
       fmt.Println("Error:", err)
       os.Exit(1)
     }
-    fmt.Println("Created wick.json")
+    fmt.Println("Created wlim.json")
   },
 }
 
@@ -31,4 +31,3 @@ func init() {
   initCmd.Flags().Int("concurrency", 0, "Default concurrency")
   rootCmd.AddCommand(initCmd)
 }
-

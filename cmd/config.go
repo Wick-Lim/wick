@@ -13,7 +13,7 @@ type Config struct {
 }
 
 func loadConfig(projectDir string) (*Config, error) {
-  path := filepath.Join(projectDir, "wick.json")
+  path := filepath.Join(projectDir, "wlim.json")
   b, err := os.ReadFile(path)
   if err != nil { return &Config{}, nil }
   var cfg Config
@@ -22,7 +22,7 @@ func loadConfig(projectDir string) (*Config, error) {
 }
 
 func initProjectConfig(projectDir string, cfg *Config) error {
-  path := filepath.Join(projectDir, "wick.json")
+  path := filepath.Join(projectDir, "wlim.json")
   if _, err := os.Stat(path); err == nil {
     // do not overwrite existing
     return nil

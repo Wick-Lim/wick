@@ -10,7 +10,7 @@ import (
 
 var listCmd = &cobra.Command{
   Use:   "list",
-  Short: "List roots and packages from wick.lock",
+  Short: "List roots and packages from wlim.lock",
   Run: func(cmd *cobra.Command, args []string) {
     projectDir, _ := cmd.Flags().GetString("dir")
     if projectDir == "" { projectDir = "." }

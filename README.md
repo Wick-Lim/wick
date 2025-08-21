@@ -1,4 +1,4 @@
-# wick
+# wlim
 
 Minimal npm-like installer in Go. Resolves semver ranges, fetches tarballs from the npm registry, and installs into `node_modules`.
 
@@ -8,8 +8,8 @@ Minimal npm-like installer in Go. Resolves semver ranges, fetches tarballs from 
 
 Option A — build and copy to PATH:
 ```
-go build -o wick
-install -m 0755 wick ~/.local/bin/wick   # or: sudo install -m 0755 wick /usr/local/bin/wick
+go build -o wlim
+install -m 0755 wlim ~/.local/bin/wlim   # or: sudo install -m 0755 wlim /usr/local/bin/wlim
 # ensure ~/.local/bin is on PATH
 ```
 
@@ -23,59 +23,59 @@ go install
 ## Usage
 
 ```
-wick install [<name>[@version|@range] ...]
+wlim install [<name>[@version|@range] ...]
 
 # examples
-wick install express
-wick install express@latest
-wick install react@^18
-wick install @types/node@~20
-wick install react react-dom @types/react@^18  # multi-root install
-wick install --frozen-lockfile                 # install strictly from wick.lock
+wlim install express
+wlim install express@latest
+wlim install react@^18
+wlim install @types/node@~20
+wlim install react react-dom @types/react@^18  # multi-root install
+wlim install --frozen-lockfile                 # install strictly from wlim.lock
 
 # install into a specific project directory
-wick install express --dir ./my-app
+wlim install express --dir ./my-app
 
 # remove packages from project (store is kept)
-wick remove react react-dom
+wlim remove react react-dom
 
 # update lockfile to latest for roots (and reinstall)
-wick update               # all roots
-wick update react         # only react
-wick update --policy minor  # keep major, update to highest minor/patch
-wick update --policy patch  # keep major.minor, update to highest patch
+wlim update               # all roots
+wlim update react         # only react
+wlim update --policy minor  # keep major, update to highest minor/patch
+wlim update --policy patch  # keep major.minor, update to highest patch
 
-# clean unreferenced store entries per wick.lock
-wick clean                # remove unused from store
-wick clean --dry-run      # only show actions
+# clean unreferenced store entries per wlim.lock
+wlim clean                # remove unused from store
+wlim clean --dry-run      # only show actions
 
 # list lockfile contents
-wick list                 # roots and packages
-wick list --json          # machine-readable JSON
-wick list --format yaml   # YAML output
+wlim list                 # roots and packages
+wlim list --json          # machine-readable JSON
+wlim list --format yaml   # YAML output
 ```
 
 Notes:
-- Uses a pnpm-like global store at `~/.wick/store/v3` (override with `WICK_STORE_DIR` or `--store-dir`).
+- Uses a pnpm-like global store at `~/.wlim/store/v3` (override with `WLIM_STORE_DIR` or `--store-dir`).
 - Creates symlinks from `<projectDir>/node_modules/<name>` to the store; each package’s own `node_modules` links its dependencies.
 - Adds direct-dependency bins to `<projectDir>/node_modules/.bin`.
 - Parallel installs: use `--concurrency N` to control worker count.
-- Writes `wick.lock` capturing the resolved graph.
-- Installs can also consume an existing `wick.lock` (exact versions pinned).
+- Writes `wlim.lock` capturing the resolved graph.
+- Installs can also consume an existing `wlim.lock` (exact versions pinned).
 - Basic semver ranges are supported via Masterminds/semver.
 - Integrity verification via `dist.integrity` (SRI) or `shasum` when available.
 - Hoisting/deduplication are not implemented yet.
 
 Config:
-- Optional `wick.json` in project root supports:
+- Optional `wlim.json` in project root supports:
   - `registry`: default registry base URL
   - `storeDir`: override store path
   - `concurrency`: default parallelism for install/update
-  - Precedence: flags > env > `wick.json` > defaults
+  - Precedence: flags > env > `wlim.json` > defaults
 
 Cache:
-- Registry metadata cached at `~/.wick/cache` (override with `WICK_CACHE_DIR`).
-- TTL via `WICK_CACHE_TTL_SECONDS` (0 disables cache, -1 unlimited).
+- Registry metadata cached at `~/.wlim/cache` (override with `WLIM_CACHE_DIR`).
+- TTL via `WLIM_CACHE_TTL_SECONDS` (0 disables cache, -1 unlimited).
 
 Logging:
 - Use `-v/--verbose` to print download and progress details.
@@ -83,16 +83,16 @@ Logging:
 Registry:
 - Override the npm registry
   - Flag: `--registry https://registry.npmjs.org`
-  - Env: `WICK_REGISTRY=https://your-registry.example.com`
+  - Env: `WLIM_REGISTRY=https://your-registry.example.com`
   - Precedence: flag overrides env.
 
 Remove:
-- `wick remove <pkg> [...]` removes project links and updates the lockfile; add `--clean-store` to also prune the global store.
+- `wlim remove <pkg> [...]` removes project links and updates the lockfile; add `--clean-store` to also prune the global store.
 
 List:
-- `wick list` prints roots and packages; `--json` outputs a machine-readable format.
+- `wlim list` prints roots and packages; `--json` outputs a machine-readable format.
 Version
-- `wick version` prints the version (set via Go ldflags). `make build` injects the current tag.
+- `wlim version` prints the version (set via Go ldflags). `make build` injects the current tag.
 
 
 Release via Homebrew Tap (optional)
@@ -101,4 +101,4 @@ Release via Homebrew Tap (optional)
   - `git tag v0.1.0 && git push --tags`
   - `goreleaser release --clean`
 - Install:
-  - `brew tap wicklim/tap && brew install wick`
+  - `brew tap wicklim/tap && brew install wlim`

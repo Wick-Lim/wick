@@ -12,7 +12,7 @@ func TestInitCreatesConfig(t *testing.T) {
   if err := initProjectConfig(proj, &Config{Registry:"http://r", StoreDir:"/s", Concurrency:4}); err != nil {
     t.Fatalf("init: %v", err)
   }
-  b, err := os.ReadFile(filepath.Join(proj, "wick.json"))
+  b, err := os.ReadFile(filepath.Join(proj, "wlim.json"))
   if err != nil { t.Fatalf("read: %v", err) }
   var cfg Config
   if err := json.Unmarshal(b, &cfg); err != nil { t.Fatalf("json: %v", err) }
@@ -20,4 +20,3 @@ func TestInitCreatesConfig(t *testing.T) {
     t.Fatalf("unexpected cfg: %+v", cfg)
   }
 }
-

@@ -11,10 +11,10 @@ func TestLoadConfigAndPrecedence(t *testing.T) {
   proj := t.TempDir()
   cfg := Config{Registry: "http://reg", StoreDir: "/store", Concurrency: 3}
   b,_ := json.Marshal(cfg)
-  _ = os.WriteFile(filepath.Join(proj, "wick.json"), b, 0o644)
+  _ = os.WriteFile(filepath.Join(proj, "wlim.json"), b, 0o644)
 
   // env overrides config for store
-  t.Setenv("WICK_STORE_DIR", "/envstore")
+  t.Setenv("WLIM_STORE_DIR", "/envstore")
   // flag should override both; we simulate by calling default/effective functions indirectly via env
   c, err := loadConfig(proj)
   if err != nil { t.Fatalf("load: %v", err) }
@@ -22,4 +22,3 @@ func TestLoadConfigAndPrecedence(t *testing.T) {
     t.Fatalf("unexpected cfg: %+v", c)
   }
 }
-

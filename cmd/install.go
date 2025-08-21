@@ -108,7 +108,7 @@ func registryBase() string {
     if registryOverride != "" {
         return strings.TrimRight(registryOverride, "/")
     }
-    if v := os.Getenv("WICK_REGISTRY"); v != "" {
+    if v := os.Getenv("WLIM_REGISTRY"); v != "" {
         return strings.TrimRight(v, "/")
     }
     return "https://registry.npmjs.org"
@@ -331,19 +331,19 @@ func downloadAndExtract(ctx context.Context, url, destDir string) error {
 // ---- pnpm-like store + symlink layout helpers ----
 
 func defaultStoreDir() (string, error) {
-    if v := os.Getenv("WICK_STORE_DIR"); v != "" {
+    if v := os.Getenv("WLIM_STORE_DIR"); v != "" {
         return v, nil
     }
     home, err := os.UserHomeDir()
     if err != nil {
         return "", err
     }
-    return filepath.Join(home, ".wick", "store", "v3"), nil
+    return filepath.Join(home, ".wlim", "store", "v3"), nil
 }
 
 // store path for a given package@version (no integrity yet)
 func storePkgPath(storeDir, name, version string) string {
-    // For simplicity: ~/.wick/store/v3/<name>/<version>
+    // For simplicity: ~/.wlim/store/v3/<name>/<version>
     return filepath.Join(storeDir, name, version)
 }
 
@@ -669,7 +669,7 @@ func writeLockfile(projectDir string, roots []*GraphNode, nodes map[string]*Grap
     for k, n := range nodes {
         lf.Packages[k] = LockPackage{Name: n.Name, Version: n.Version, Dependencies: n.Deps}
     }
-    path := filepath.Join(projectDir, "wick.lock")
+    path := filepath.Join(projectDir, "wlim.lock")
     f, err := os.Create(path)
     if err != nil { return err }
     defer f.Close()
@@ -679,7 +679,7 @@ func writeLockfile(projectDir string, roots []*GraphNode, nodes map[string]*Grap
 }
 
 func readLockfile(projectDir string) (*LockFile, error) {
-    b, err := os.ReadFile(filepath.Join(projectDir, "wick.lock"))
+    b, err := os.ReadFile(filepath.Join(projectDir, "wlim.lock"))
     if err != nil { return nil, err }
     var lf LockFile
     if err := json.Unmarshal(b, &lf); err != nil { return nil, err }
@@ -864,7 +864,7 @@ func removeFromLockfile(projectDir string, names []string) error {
     }
     lf.Packages = keptPkgs
     // write back
-    path := filepath.Join(projectDir, "wick.lock")
+    path := filepath.Join(projectDir, "wlim.lock")
     f, err := os.Create(path)
     if err != nil { return err }
     defer f.Close()
@@ -1008,10 +1008,10 @@ func installGraph(ctx context.Context, projectDir, storeDir string, roots []*Gra
 
 // ---- Disk metadata cache for registry root docs ----
 func cacheBaseDir() (string, error) {
-    if v := os.Getenv("WICK_CACHE_DIR"); v != "" { return v, nil }
+    if v := os.Getenv("WLIM_CACHE_DIR"); v != "" { return v, nil }
     home, err := os.UserHomeDir()
     if err != nil { return "", err }
-    return filepath.Join(home, ".wick", "cache"), nil
+    return filepath.Join(home, ".wlim", "cache"), nil
 }
 
 func rootDocCachePath(pkg string) (string, error) {
@@ -1040,7 +1040,7 @@ func writeRootDocCache(pkg string, rd *RootDoc) error {
 }
 
 func cacheTTLSeconds() int64 {
-    if v := os.Getenv("WICK_CACHE_TTL_SECONDS"); v != "" {
+    if v := os.Getenv("WLIM_CACHE_TTL_SECONDS"); v != "" {
         if n, err := strconv.ParseInt(v, 10, 64); err == nil { return n }
     }
     return -1 // no TTL
@@ -1173,10 +1173,10 @@ var installCmd = &cobra.Command{
 
 func init() {
     installCmd.Flags().String("dir", ".", "Project directory where node_modules resides")
-    installCmd.Flags().String("store-dir", "", "Override content-addressable store directory (defaults to ~/.wick/store/v3 or WICK_STORE_DIR)")
+    installCmd.Flags().String("store-dir", "", "Override content-addressable store directory (defaults to ~/.wlim/store/v3 or WLIM_STORE_DIR)")
     installCmd.Flags().Int("concurrency", runtime.NumCPU(), "Parallel downloads/extract workers")
-    installCmd.Flags().String("registry", "", "Override npm registry base URL (takes precedence over WICK_REGISTRY)")
-    installCmd.Flags().Bool("frozen-lockfile", false, "Use existing wick.lock exclusively and fail on mismatches")
+    installCmd.Flags().String("registry", "", "Override npm registry base URL (takes precedence over WLIM_REGISTRY)")
+    installCmd.Flags().Bool("frozen-lockfile", false, "Use existing wlim.lock exclusively and fail on mismatches")
     installCmd.Flags().String("log-format", "fancy", "Log format: fancy|plain")
     installCmd.Flags().Bool("no-color", false, "Disable ANSI colors in logs")
     installCmd.Flags().Bool("progress", true, "Show progress bar")

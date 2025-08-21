@@ -3,12 +3,12 @@ package cmd
 import (
   "fmt"
   "github.com/spf13/cobra"
-  iv "github.com/wicklim/wick/internal/version"
+  iv "github.com/wicklim/wlim/internal/version"
 )
 
 var versionCmd = &cobra.Command{
   Use:   "version",
-  Short: "Print wick version",
+  Short: "Print wlim version",
   Run: func(cmd *cobra.Command, args []string) {
     fmt.Println(iv.Version)
   },

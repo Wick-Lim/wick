@@ -38,8 +38,8 @@ async function download(url, dest) {
     const version = process.env.npm_package_version; // e.g. 0.1.0
     const osName = mapOS();
     const arch = mapArch();
-    const filename = `wick_${version}_${osName}_${arch}.tar.gz`;
-    const url = `https://github.com/wicklim/wick/releases/download/v${version}/${filename}`;
+    const filename = `wlim_${version}_${osName}_${arch}.tar.gz`;
+    const url = `https://github.com/wicklim/wlim/releases/download/v${version}/${filename}`;
     const pkgRoot = path.join(__dirname, '..');
     const distDir = path.join(pkgRoot, 'dist');
     const binDir = path.join(pkgRoot, 'bin');
@@ -47,13 +47,13 @@ async function download(url, dest) {
     fs.mkdirSync(binDir, { recursive: true });
     const tgz = path.join(distDir, filename);
 
-    console.log(`[wick] downloading ${url}`);
+    console.log(`[wlim] downloading ${url}`);
     await download(url, tgz);
 
-    console.log(`[wick] extracting ${filename}`);
+    console.log(`[wlim] extracting ${filename}`);
     await tar.x({ file: tgz, cwd: distDir });
 
-    const srcBin = path.join(distDir, 'wick');
+    const srcBin = path.join(distDir, 'wlim');
     let finalSrc = srcBin;
     if (!fs.existsSync(srcBin)) {
       const candidates = [];
@@ -61,18 +61,18 @@ async function download(url, dest) {
         for (const e of fs.readdirSync(dir)) {
           const p = path.join(dir, e);
           const st = fs.statSync(p);
-          if (st.isDirectory()) walk(p); else if (e === 'wick') candidates.push(p);
+          if (st.isDirectory()) walk(p); else if (e === 'wlim') candidates.push(p);
         }
       };
       walk(distDir);
-      if (candidates.length === 0) throw new Error('wick binary not found after extraction');
+      if (candidates.length === 0) throw new Error('wlim binary not found after extraction');
       finalSrc = candidates[0];
     }
-    fs.copyFileSync(finalSrc, path.join(binDir, 'wick'));
-    fs.chmodSync(path.join(binDir, 'wick'), 0o755);
-    console.log('[wick] install complete');
+    fs.copyFileSync(finalSrc, path.join(binDir, 'wlim'));
+    fs.chmodSync(path.join(binDir, 'wlim'), 0o755);
+    console.log('[wlim] install complete');
   } catch (err) {
-    console.error('[wick] install failed:', err.message);
+    console.error('[wlim] install failed:', err.message);
     process.exit(1);
   }
 })();

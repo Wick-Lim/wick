@@ -15,9 +15,9 @@ var verbose bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-    Use:   "wick",
+    Use:   "wlim",
     Short: "Fast npm-like package installer",
-    Long:  "wick is a minimal npm-like installer written in Go. It resolves semver ranges, fetches tarballs from the npm registry, and installs into node_modules.",
+    Long:  "wlim is a minimal npm-like installer written in Go. It resolves semver ranges, fetches tarballs from the npm registry, and installs into node_modules.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
