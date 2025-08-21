@@ -14,10 +14,9 @@ func TestListLockfileRoots(t *testing.T) {
     "b@2.0.0": {Name:"b", Version:"2.0.0", Dependencies: map[string]string{}},
   }}
   b,_ := json.Marshal(lf)
-  _ = os.WriteFile(filepath.Join(proj, "wick.lock"), b, 0o644)
+  _ = os.WriteFile(filepath.Join(proj, "wlim.lock"), b, 0o644)
 
   roots, pkgs, err := listLockfile(proj)
   if err != nil { t.Fatalf("listLockfile: %v", err) }
   if len(roots) != 2 || len(pkgs) != 2 { t.Fatalf("unexpected sizes: roots=%d pkgs=%d", len(roots), len(pkgs)) }
 }
-
