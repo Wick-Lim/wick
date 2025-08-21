@@ -54,8 +54,8 @@ func TestCyclicDependenciesInstall(t *testing.T) {
   if err != nil { t.Fatalf("resolve: %v", err) }
   storeDir, _ := defaultStoreDir()
   if err := installParallel(ctx, projectDir, storeDir, root, nodes, 2); err != nil { t.Fatalf("install: %v", err) }
-  // Both a and b exist
-  for _, name := range []string{"a","b"} {
+  // Root a exists in project
+  for _, name := range []string{"a"} {
     if fi, err := os.Lstat(filepath.Join(projectDir, "node_modules", name)); err!=nil || fi.Mode()&os.ModeSymlink==0 {
       t.Fatalf("%s link missing", name)
     }

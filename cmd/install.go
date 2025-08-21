@@ -850,20 +850,20 @@ func installParallel(ctx context.Context, projectDir, storeDir string, root *Gra
                 pkgStorePath := storePkgPath(storeDir, n.Name, n.Version)
                 if _, err := os.Stat(pkgStorePath); os.IsNotExist(err) {
                     logf("Downloading %s@%s\n", n.Name, n.Version)
-                    if err := ensureDir(pkgStorePath); err != nil { errCh <- err; continue }
+                    if err := ensureDir(pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     tarPath := filepath.Join(pkgStorePath, "pkg.tgz")
                     // download
-                    if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { errCh <- err; continue }
-                    if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { errCh <- err; continue }
-                    if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { errCh <- err; continue }
+                    if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { select { case errCh <- err: default: }; continue }
+                    if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { select { case errCh <- err: default: }; continue }
+                    if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     // keep tarball for cache; optional: os.Remove(tarPath)
                 }
                 // link deps inside store
                 storeNM := filepath.Join(pkgStorePath, "node_modules")
-                if err := ensureDir(storeNM); err != nil { errCh <- err; continue }
+                if err := ensureDir(storeNM); err != nil { select { case errCh <- err: default: }; continue }
                 for depName, depV := range n.Deps {
                     depStore := storePkgPath(storeDir, depName, depV)
-                    if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { errCh <- err; break }
+                    if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { select { case errCh <- err: default: }; break }
                 }
                 // progress
                 if total > 0 {
@@ -917,17 +917,17 @@ func installGraph(ctx context.Context, projectDir, storeDir string, roots []*Gra
                 pkgStorePath := storePkgPath(storeDir, n.Name, n.Version)
                 if _, err := os.Stat(pkgStorePath); os.IsNotExist(err) {
                     logf("Downloading %s@%s\n", n.Name, n.Version)
-                    if err := ensureDir(pkgStorePath); err != nil { errCh <- err; continue }
+                    if err := ensureDir(pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                     tarPath := filepath.Join(pkgStorePath, "pkg.tgz")
-                    if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { errCh <- err; continue }
-                    if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { errCh <- err; continue }
-                    if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { errCh <- err; continue }
+                    if err := downloadToFileWithRetry(ctx, n.MD.Dist.Tarball, tarPath, 3); err != nil { select { case errCh <- err: default: }; continue }
+                    if err := verifyIntegrityFile(tarPath, n.MD.Dist.Integrity, n.MD.Dist.Shasum); err != nil { select { case errCh <- err: default: }; continue }
+                    if err := downloadAndExtractFromFile(tarPath, pkgStorePath); err != nil { select { case errCh <- err: default: }; continue }
                 }
                 storeNM := filepath.Join(pkgStorePath, "node_modules")
-                if err := ensureDir(storeNM); err != nil { errCh <- err; continue }
+                if err := ensureDir(storeNM); err != nil { select { case errCh <- err: default: }; continue }
                 for depName, depV := range n.Deps {
                     depStore := storePkgPath(storeDir, depName, depV)
-                    if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { errCh <- err; break }
+                    if err := linkIntoNodeModules(storeNM, depName, depStore); err != nil { select { case errCh <- err: default: }; break }
                 }
             }
             done <- struct{}{}

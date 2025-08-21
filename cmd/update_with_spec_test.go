@@ -31,6 +31,7 @@ func TestUpdateWithExplicitSpec(t *testing.T) {
   srv = httptest.NewServer(handler)
   defer srv.Close()
   os.Setenv("WICK_REGISTRY", srv.URL)
+  os.Setenv("WICK_CACHE_DIR", t.TempDir())
 
   proj := t.TempDir()
   lf := LockFile{Roots: []string{"x@1.0.0"}, Packages: map[string]LockPackage{ "x@1.0.0": {Name:"x", Version:"1.0.0"} }}
@@ -49,4 +50,3 @@ func TestUpdateWithExplicitSpec(t *testing.T) {
   _ = json.Unmarshal(data, &lf2)
   if lf2.Roots[0] != "x@1.0.0" { t.Fatalf("expected x@1.0.0, got %v", lf2.Roots[0]) }
 }
-

@@ -34,6 +34,7 @@ func TestUpdatePolicyMinorPatch(t *testing.T) {
   defer srv.Close()
 
   proj := t.TempDir()
+  t.Setenv("WICK_CACHE_DIR", t.TempDir())
   // Starting at 1.1.0
   lf := LockFile{Roots: []string{"x@1.1.0"}, Packages: map[string]LockPackage{ "x@1.1.0": {Name:"x", Version:"1.1.0"}}}
   b,_ := json.Marshal(lf)

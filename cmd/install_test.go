@@ -53,6 +53,7 @@ func TestInstallFromLockfileHonorsVersions(t *testing.T) {
 
     t.Setenv("WICK_REGISTRY", srv.URL)
     t.Setenv("WICK_STORE_DIR", t.TempDir())
+    t.Setenv("WICK_CACHE_DIR", t.TempDir())
     projectDir := t.TempDir()
 
     // Write lockfile pinning x@1.0.0
@@ -106,6 +107,7 @@ func TestDownloadRetrySucceeds(t *testing.T) {
     defer srv.Close()
     t.Setenv("WICK_REGISTRY", srv.URL)
     t.Setenv("WICK_STORE_DIR", t.TempDir())
+    t.Setenv("WICK_CACHE_DIR", t.TempDir())
     projectDir := t.TempDir()
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
