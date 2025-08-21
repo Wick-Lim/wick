@@ -2,6 +2,7 @@
 wick
 wick.lock
 dist/
+node_modules
 
 # Go caches (local)
 .gocache/
