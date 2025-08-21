@@ -5,7 +5,6 @@ import (
     "encoding/json"
     "net/http"
     "net/http/httptest"
-    "net"
     "os"
     "path/filepath"
     "runtime"
@@ -44,11 +43,7 @@ func TestInstallFromLockfileHonorsVersions(t *testing.T) {
             http.NotFound(w,r)
         }
     })
-    ln, err := net.Listen("tcp4","127.0.0.1:0")
-    if err != nil { t.Fatalf("listen: %v", err) }
-    srv = httptest.NewUnstartedServer(handler)
-    srv.Listener = ln
-    srv.Start()
+    srv = httptest.NewServer(handler)
     defer srv.Close()
 
     t.Setenv("WICK_REGISTRY", srv.URL)
